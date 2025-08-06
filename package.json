@@ -1,0 +1,68 @@
+{
+  "name": "school-management-app",
+  "version": "1.0.0",
+  "description": "School Management Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "cross-env NODE_ENV=development npm-run-all --parallel dev:vite dev:electron",
+    "dev:vite": "vite",
+    "dev:electron": "electron .",
+    "build": "npx vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "dist": "npm run build && electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/souldougri/scool.git"
+  },
+  "keywords": [
+    "electron",
+    "react",
+    "sqlite",
+    "school"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/souldougri/scool/issues"
+  },
+  "homepage": "https://github.com/souldougri/scool#readme",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "cross-env": "^7.0.3",
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12",
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "decompress": "^4.2.1",
+    "knex": "^3.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.7.1",
+    "sqlite3": "^5.1.7",
+    "vite": "^7.0.6"
+  },
+  "build": {
+    "appId": "com.school.management",
+    "productName": "School Management",
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
