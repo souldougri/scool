@@ -75,6 +75,7 @@ async function setupDatabase() {
         table.integer('class_id').unsigned().references('id').inTable('classes').onDelete('SET NULL');
         table.string('phone_number');
         table.string('place_of_birth');
+        table.string('academic_year');
       });
     } else {
       // Migration for existing users
@@ -89,6 +90,13 @@ async function setupDatabase() {
       if (!hasPlaceOfBirth) {
         await db.schema.alterTable('students', (table) => {
           table.string('place_of_birth');
+        });
+      }
+
+      const hasAcademicYear = await db.schema.hasColumn('students', 'academic_year');
+      if (!hasAcademicYear) {
+        await db.schema.alterTable('students', (table) => {
+          table.string('academic_year');
         });
       }
     }

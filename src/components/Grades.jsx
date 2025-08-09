@@ -64,11 +64,16 @@ function Grades() {
   return (
     <div className="container">
       <div className="page-header">
-        <div>
-            <h2>درجات الطالب: {student.name}</h2>
-            <p style={{ color: 'var(--text-light-color)'}}>الفصل: {student.class_name || 'غير محدد'}</p>
-        </div>
+        <h2>درجات الطالب: {student.name}</h2>
         <button onClick={() => navigate('/students')} className="secondary">&larr; العودة إلى الطلاب</button>
+      </div>
+
+      <div className="student-info-grid">
+        <p><strong>تاريخ الميلاد:</strong> {student.dob}</p>
+        <p><strong>مكان الميلاد:</strong> {student.place_of_birth || '-'}</p>
+        <p><strong>رقم الهاتف:</strong> {student.phone_number || '-'}</p>
+        <p><strong>السنة الدراسية:</strong> {student.academic_year || '-'}</p>
+        <p><strong>الفصل:</strong> {student.class_name || 'غير محدد'}</p>
       </div>
 
       {subjects.length > 0 ? (

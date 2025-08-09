@@ -102,9 +102,11 @@ function ReportCard() {
         </header>
 
         <section className="report-card-student-info">
-          <p><strong>اسم الطالب:</strong> {student.name}</p>
-          <p><strong>الفصل الدراسي:</strong> {student.class_name}</p>
-          <p><strong>تاريخ الميلاد:</strong> {student.dob}</p>
+            <p><strong>اسم الطالب:</strong> {student.name}</p>
+            <p><strong>تاريخ الميلاد:</strong> {student.dob}</p>
+            <p><strong>مكان الميلاد:</strong> {student.place_of_birth || '-'}</p>
+            <p><strong>رقم الهاتف:</strong> {student.phone_number || '-'}</p>
+            <p><strong>السنة الدراسية:</strong> {student.academic_year || '-'}</p>
         </section>
 
         <table>

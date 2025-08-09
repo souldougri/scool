@@ -21,6 +21,7 @@ const StudentForm = ({ student, onSave, onCancel, classes }) => {
     photo_data: null,
     phone_number: student ? student.phone_number : '',
     place_of_birth: student ? student.place_of_birth : '',
+    academic_year: student ? student.academic_year : '',
   });
   const [photoPreview, setPhotoPreview] = useState(student ? student.photo_path : null);
 
@@ -65,6 +66,7 @@ const StudentForm = ({ student, onSave, onCancel, classes }) => {
         <option value="أنثى">أنثى</option>
       </select>
       <input name="dob" type="date" value={formData.dob} onChange={handleChange} required />
+      <input name="academic_year" value={formData.academic_year} onChange={handleChange} placeholder="السنة الدراسية" />
       <select name="class_id" value={formData.class_id} onChange={handleChange} required>
         <option value="">اختر الفصل</option>
         {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -185,11 +187,11 @@ function StudentManagement() {
       <table>
         <thead>
           <tr>
-            <th>الاسم</th>
-            <th>الجنس</th>
+            <th>الاسم الكامل</th>
             <th>تاريخ الميلاد</th>
+            <th>مكان الميلاد</th>
             <th>رقم الهاتف</th>
-            <th>الفصل</th>
+            <th>السنة الدراسية</th>
             <th>إجراءات</th>
           </tr>
         </thead>
@@ -197,10 +199,10 @@ function StudentManagement() {
           {filteredStudents.map(student => (
             <tr key={student.id}>
               <td>{student.name}</td>
-              <td>{student.gender}</td>
               <td>{student.dob}</td>
+              <td>{student.place_of_birth || '-'}</td>
               <td>{student.phone_number || '-'}</td>
-              <td>{student.class_name || 'غير محدد'}</td>
+              <td>{student.academic_year || '-'}</td>
               <td className="actions-cell">
                 <button className="secondary" onClick={() => navigate(`/students/${student.id}/id-card`)}>بطاقة</button>
                 <button className="secondary" onClick={() => navigate(`/students/${student.id}/grades`)}>الدرجات</button>

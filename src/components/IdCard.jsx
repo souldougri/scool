@@ -85,7 +85,9 @@ function IdCard() {
                 <div className="id-card-details">
                     <p><strong>الاسم:</strong> {student.name}</p>
                     <p><strong>تاريخ الميلاد:</strong> {student.dob}</p>
-                    <p><strong>مكان الميلاد:</strong> {student.place_of_birth}</p>
+                    <p><strong>مكان الميلاد:</strong> {student.place_of_birth || '-'}</p>
+                    <p><strong>رقم الهاتف:</strong> {student.phone_number || '-'}</p>
+                    <p><strong>السنة الدراسية:</strong> {student.academic_year || '-'}</p>
                 </div>
             </div>
             <footer className="id-card-footer">
