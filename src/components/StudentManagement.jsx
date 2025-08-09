@@ -204,7 +204,7 @@ function StudentManagement() {
               <td>{student.phone_number || '-'}</td>
               <td>{student.academic_year || '-'}</td>
               <td className="actions-cell">
-                <button className="secondary" onClick={() => navigate(`/students/${student.id}/id-card`)}>بطاقة</button>
+                <button className="secondary" onClick={() => navigate(`/students/${student.id}/fees`)}>الرسوم</button>
                 <button className="secondary" onClick={() => navigate(`/students/${student.id}/grades`)}>الدرجات</button>
                 <button onClick={() => handleEdit(student)}>تعديل</button>
                 <button className="danger" onClick={() => handleDelete(student.id)}>حذف</button>

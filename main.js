@@ -186,6 +186,61 @@ app.whenReady().then(async () => {
     return db('students').where('id', id).update(updateData);
   });
 
+  // Fees IPC
+  ipcMain.handle('get-student-fee-details', async (event, { studentId, academicYear }) => {
+    const fee = await db('student_fees').where({ student_id: studentId, academic_year: academicYear }).first();
+    const payments = await db('payments').where({ student_id: studentId, academic_year: academicYear }).orderBy('date', 'desc');
+    return {
+        total_fees: fee ? fee.total_fees : 0,
+        payments: payments || [],
+    };
+  });
+
+  ipcMain.handle('set-total-fee', async (event, { studentId, academicYear, totalFees }) => {
+    return db('student_fees')
+        .insert({
+            student_id: studentId,
+            academic_year: academicYear,
+            total_fees: totalFees,
+        })
+        .onConflict(['student_id', 'academic_year'])
+        .merge();
+  });
+
+  ipcMain.handle('add-payment', async (event, { studentId, academicYear, amount, date }) => {
+    return db('payments').insert({
+        student_id: studentId,
+        academic_year: academicYear,
+        amount,
+        date,
+    });
+  });
+
+  ipcMain.handle('get-all-student-fee-summary', async (event) => {
+    const students = await db('students')
+        .leftJoin('classes', 'students.class_id', 'classes.id')
+        .select('students.id', 'students.name', 'students.class_id', 'classes.name as class_name');
+
+    const fees = await db('student_fees').select('*');
+    const payments = await db('payments').select(db.raw('student_id, academic_year, SUM(amount) as total_paid')).groupBy('student_id', 'academic_year');
+
+    const feesMap = new Map(fees.map(f => [`${f.student_id}-${f.academic_year}`, f.total_fees]));
+    const paymentsMap = new Map(payments.map(p => [`${p.student_id}-${p.academic_year}`, p.total_paid]));
+
+    return students.map(s => {
+        const academic_year = s.academic_year; // Assuming we work with the student's current academic year
+        const total_fees = feesMap.get(`${s.id}-${academic_year}`) || 0;
+        const total_paid = paymentsMap.get(`${s.id}-${academic_year}`) || 0;
+        return {
+            ...s,
+            total_fees,
+            total_paid,
+            remaining_balance: total_fees - total_paid,
+        };
+    });
+  });
+
+
   ipcMain.handle('delete-student', async (event, id) => {
     const student = await db('students').where('id', id).first();
     if (student && student.photo_path && fs.existsSync(student.photo_path)) {
@@ -257,6 +312,46 @@ app.whenReady().then(async () => {
 
     } catch (error) {
         console.error('Failed to export student list PDF:', error);
+        return { success: false, error: error.message };
+    }
+  });
+
+  ipcMain.handle('export-fee-report-pdf', async (event, feeSummary) => {
+    try {
+        const templatePath = path.join(__dirname, '..', 'fee-report-template.html');
+        const templateHtml = fs.readFileSync(templatePath, 'utf8');
+
+        const tableRows = feeSummary.map(s => `
+            <tr>
+                <td>${s.name}</td>
+                <td>${s.class_name || '-'}</td>
+                <td>${s.total_fees.toFixed(2)}</td>
+                <td>${s.total_paid.toFixed(2)}</td>
+                <td>${s.remaining_balance.toFixed(2)}</td>
+            </tr>
+        `).join('');
+        const finalHtml = templateHtml.replace('<!-- ##TABLE_ROWS## -->', tableRows);
+
+        const tempWindow = new BrowserWindow({ show: false });
+        await tempWindow.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(finalHtml)}`);
+
+        const pdfData = await tempWindow.webContents.printToPDF({ pageSize: 'A4', landscape: true });
+        tempWindow.close();
+
+        const { filePath } = await dialog.showSaveDialog({
+            title: 'حفظ تقرير الرسوم',
+            defaultPath: `fee-report-${Date.now()}.pdf`,
+            filters: [{ name: 'Adobe PDF', extensions: ['pdf'] }]
+        });
+
+        if (filePath) {
+            fs.writeFileSync(filePath, pdfData);
+            return { success: true, path: filePath };
+        }
+        return { success: false, message: 'تم إلغاء العملية.' };
+
+    } catch (error) {
+        console.error('Failed to export fee report PDF:', error);
         return { success: false, error: error.message };
     }
   });

@@ -425,6 +425,115 @@ button.success:hover {
     margin: 5px 0;
 }
 
+/* Fee Management Page Styles */
+.fee-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    background-color: var(--secondary-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin: 20px 0;
+    text-align: center;
+}
+
+.fee-summary h4 {
+    margin: 0 0 10px 0;
+    color: var(--text-light-color);
+    font-weight: 500;
+}
+
+.fee-summary p {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.fee-summary p.success {
+    color: var(--success-color);
+}
+.fee-summary p.danger {
+    color: var(--danger-color);
+}
+
+.fee-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin: 40px 0;
+}
+
+.form-inline {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: #fff;
+}
+
+.form-inline h3 {
+    margin: 0 0 10px 0;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+/* Receipt Styles */
+.receipt {
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif;
+    padding: 30px;
+    margin: 20px auto;
+    width: 80mm;
+    min-height: 120mm;
+    border: 1px solid var(--border-color);
+    background: white;
+    box-sizing: border-box;
+    box-shadow: var(--box-shadow);
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 15px;
+}
+
+.receipt-header img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.receipt-header h1 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.receipt-header h2 {
+    font-size: 1rem;
+    color: var(--text-light-color);
+    margin: 5px 0 0 0;
+}
+
+.receipt-body {
+    margin-bottom: 20px;
+}
+
+.receipt-body p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.receipt-footer {
+    text-align: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 15px;
+    font-size: 0.9rem;
+    color: var(--text-light-color);
+}
+
 button:hover {
   background-color: var(--primary-hover-color);
 }

@@ -9,6 +9,9 @@ import Grades from './components/Grades';
 import ReportCard from './components/ReportCard';
 import IdCard from './components/IdCard';
 import Schedule from './components/Schedule';
+import FeeManagement from './components/FeeManagement';
+import PaymentReceipt from './components/PaymentReceipt';
+import FeeReport from './components/FeeReport';
 import './App.css'; // Import the new stylesheet
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
             <Route path="/students/:studentId/grades" element={<Grades />} />
             <Route path="/students/:studentId/report-card" element={<ReportCard />} />
             <Route path="/students/:studentId/id-card" element={<IdCard />} />
+            <Route path="/students/:studentId/fees" element={<FeeManagement />} />
+            <Route path="/students/:studentId/receipt/:paymentId" element={<PaymentReceipt />} />
+            <Route path="/reports/fees" element={<FeeReport />} />
           </Routes>
         </main>
       </div>

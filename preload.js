@@ -37,9 +37,16 @@ contextBridge.exposeInMainWorld('db', {
   getStudentById: (id) => ipcRenderer.invoke('get-student-by-id', id),
   getStudentPhoto: (photoPath) => ipcRenderer.invoke('get-student-photo', photoPath),
 
+  // Fees
+  getStudentFeeDetails: (data) => ipcRenderer.invoke('get-student-fee-details', data),
+  setTotalFee: (data) => ipcRenderer.invoke('set-total-fee', data),
+  addPayment: (data) => ipcRenderer.invoke('add-payment', data),
+  getAllStudentFeeSummary: () => ipcRenderer.invoke('get-all-student-fee-summary'),
+
   // Printing
   exportToPdf: (options) => ipcRenderer.invoke('export-to-pdf', options),
   exportStudentListToPdf: (students) => ipcRenderer.invoke('export-student-list-pdf', students),
+  exportFeeReportToPdf: (summary) => ipcRenderer.invoke('export-fee-report-pdf', summary),
 });
 
 contextBridge.exposeInMainWorld('app', {

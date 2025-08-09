@@ -39,6 +39,7 @@ function Navbar() {
         <NavLink to="/classes" className={({ isActive }) => "navbar-link" + (isActive ? " active" : "")}>الفصول الدراسية</NavLink>
         <NavLink to="/subjects" className={({ isActive }) => "navbar-link" + (isActive ? " active" : "")}>المواد الدراسية</NavLink>
         <NavLink to="/schedule" className={({ isActive }) => "navbar-link" + (isActive ? " active" : "")}>الجدول الأسبوعي</NavLink>
+        <NavLink to="/reports/fees" className={({ isActive }) => "navbar-link" + (isActive ? " active" : "")}>تقرير الرسوم</NavLink>
       </div>
     </nav>
   );

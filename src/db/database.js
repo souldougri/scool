@@ -126,6 +126,30 @@ async function setupDatabase() {
       });
     }
 
+    // Check for student_fees table
+    const hasStudentFeesTable = await db.schema.hasTable('student_fees');
+    if (!hasStudentFeesTable) {
+        await db.schema.createTable('student_fees', (table) => {
+            table.increments('id').primary();
+            table.integer('student_id').unsigned().references('id').inTable('students').onDelete('CASCADE');
+            table.string('academic_year').notNullable();
+            table.decimal('total_fees', 10, 2).notNullable();
+            table.unique(['student_id', 'academic_year']);
+        });
+    }
+
+    // Check for payments table
+    const hasPaymentsTable = await db.schema.hasTable('payments');
+    if (!hasPaymentsTable) {
+        await db.schema.createTable('payments', (table) => {
+            table.increments('id').primary();
+            table.integer('student_id').unsigned().references('id').inTable('students').onDelete('CASCADE');
+            table.string('academic_year').notNullable();
+            table.decimal('amount', 10, 2).notNullable();
+            table.date('date').notNullable();
+        });
+    }
+
     console.log('Database setup complete.');
   } catch (error) {
     console.error('Error setting up database:', error);
