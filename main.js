@@ -286,7 +286,7 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('export-student-list-pdf', async (event, students) => {
     try {
-        const templatePath = path.join(__dirname, '..', 'student-list-template.html');
+        const templatePath = path.join(__dirname, 'student-list-template.html');
         const templateHtml = fs.readFileSync(templatePath, 'utf8');
 
         const tableRows = students.map(s => `<tr><td>${s.name}</td><td></td></tr>`).join('');
@@ -318,7 +318,7 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('export-fee-report-pdf', async (event, feeSummary) => {
     try {
-        const templatePath = path.join(__dirname, '..', 'fee-report-template.html');
+        const templatePath = path.join(__dirname, 'fee-report-template.html');
         const templateHtml = fs.readFileSync(templatePath, 'utf8');
 
         const tableRows = feeSummary.map(s => `

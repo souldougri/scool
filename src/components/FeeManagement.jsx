@@ -12,11 +12,12 @@ function FeeManagement() {
     const [newPaymentAmount, setNewPaymentAmount] = useState('');
     const [newPaymentDate, setNewPaymentDate] = useState(new Date().toISOString().split('T')[0]);
 
-    const fetchFeeData = useCallback(async () => {
+    const fetchFeeData = useCallback(async (year) => {
         if (!student) return;
+        const academicYear = year || student.academic_year || new Date().getFullYear().toString();
         const data = await window.db.getStudentFeeDetails({
             studentId: student.id,
-            academicYear: student.academic_year
+            academicYear: academicYear
         });
         setFeeDetails(data);
         setNewTotalFees(data.total_fees || '');
@@ -48,20 +49,22 @@ function FeeManagement() {
     const handleSetTotalFees = async (e) => {
         e.preventDefault();
         if (!newTotalFees || !student) return;
+        const academicYear = student.academic_year || new Date().getFullYear().toString();
         await window.db.setTotalFee({
             studentId: student.id,
-            academicYear: student.academic_year,
+            academicYear: academicYear,
             totalFees: parseFloat(newTotalFees),
         });
-        fetchFeeData();
+        fetchFeeData(academicYear);
     };
 
     const handleAddPayment = async (e) => {
         e.preventDefault();
         if (!newPaymentAmount || !newPaymentDate || !student) return;
+        const academicYear = student.academic_year || new Date().getFullYear().toString();
         const result = await window.db.addPayment({
             studentId: student.id,
-            academicYear: student.academic_year,
+            academicYear: academicYear,
             amount: parseFloat(newPaymentAmount),
             date: newPaymentDate,
         });

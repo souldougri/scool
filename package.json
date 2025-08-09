@@ -52,7 +52,9 @@
       "dist/**/*",
       "main.js",
       "preload.js",
-      "package.json"
+      "package.json",
+      "student-list-template.html",
+      "fee-report-template.html"
     ],
     "directories": {
       "output": "release"
