@@ -1,0 +1,623 @@
+/* src/App.css */
+
+/* Define a modern color palette and root variables */
+:root {
+  --primary-color: #4a90e2; /* A modern blue */
+  --primary-hover-color: #357abd;
+  --secondary-color: #f5f7fa; /* Light gray background */
+  --text-color: #333;
+  --text-light-color: #777;
+  --border-color: #dcdfe6;
+  --white-color: #ffffff;
+  --danger-color: #e57373;
+  --danger-hover-color: #d32f2f;
+  --success-color: #81c784;
+
+  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --border-radius: 4px;
+  --box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Global styles */
+body {
+  margin: 0;
+  font-family: var(--font-family-sans-serif);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  direction: rtl; /* Set Right-to-Left for Arabic UI */
+}
+
+#root {
+  display: flex;
+  height: 100vh;
+}
+
+/* Main layout */
+.app-container {
+  display: flex;
+  width: 100%;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Reusable component styles */
+.container {
+  padding: 20px;
+  background-color: var(--white-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+h2 {
+  font-size: 1.75rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+/* Button styles */
+button {
+  font-family: var(--font-family-sans-serif);
+  padding: 10px 18px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+/* Form Groups for labels and inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+}
+
+/* Message/Alert styles */
+.message {
+  padding: 12px;
+  border-radius: var(--border-radius);
+  margin-top: 20px;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.message.error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* Specific button colors */
+button.success {
+    background-color: var(--success-color);
+}
+button.success:hover {
+    background-color: #66bb6a;
+}
+
+/* Backup & Restore Section */
+.backup-restore-section {
+    margin-top: 40px;
+}
+
+.backup-restore-section p {
+    color: var(--text-light-color);
+    margin-bottom: 20px;
+}
+
+/* Subject List in Modal */
+.subject-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+}
+
+.subject-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+}
+
+.subject-list-item:hover {
+    background-color: #f5f7fa;
+}
+
+.subject-list-item input {
+    width: auto;
+}
+
+/* Grades page styles */
+.grades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.grade-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: #fdfdfd;
+}
+
+.grade-item label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.grade-item input {
+  width: 80px;
+  text-align: center;
+}
+
+/* Schedule Table styles */
+.schedule-table {
+  margin-top: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden; /* To make border-radius work on table */
+}
+
+.schedule-table th, .schedule-table td {
+  text-align: center;
+  vertical-align: middle;
+  height: 80px;
+}
+
+.schedule-table select {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  height: 100%;
+}
+
+.schedule-table select:focus {
+    box-shadow: none;
+    background-color: #f0f5ff;
+}
+
+.print-only {
+    display: none;
+    font-weight: 600;
+}
+
+/* Print styles */
+@media print {
+  .navbar, .page-header, .no-print {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #print-area, #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+  }
+}
+
+/* ID Card Styles */
+.id-card-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: var(--secondary-color);
+}
+
+.id-card {
+  direction: rtl;
+  font-family: 'Tajawal', sans-serif; /* You might need to import this font */
+  width: 340px;
+  height: 215px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--border-color);
+}
+
+.id-card-header {
+  background: var(--primary-color);
+  color: white;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.id-card-header img {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+.id-card-body {
+  display: flex;
+  flex-grow: 1;
+  padding: 15px;
+  gap: 15px;
+  align-items: center;
+}
+
+.id-card-photo {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  border: 3px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.id-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.id-card-details {
+  font-size: 15px;
+}
+
+.id-card-details p {
+  margin: 0 0 10px 0;
+}
+.id-card-details p strong {
+    color: #555;
+}
+
+
+.id-card-footer {
+  background-color: var(--secondary-color);
+  padding: 6px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Report Card Styles */
+.report-card {
+  direction: rtl;
+  font-family: 'Tajawal', sans-serif;
+  padding: 40px;
+  margin: 0 auto;
+  width: 210mm;
+  min-height: 280mm; /* A bit less than 297 to account for padding/margins */
+  border: 1px solid var(--border-color);
+  background: white;
+  box-sizing: border-box;
+  box-shadow: var(--box-shadow);
+}
+
+.report-card-header {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+}
+
+.report-card-header img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+}
+
+.report-card-header h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.report-card-header h2 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin: 10px 0 0 0;
+}
+
+.report-card-student-info {
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+}
+
+.report-card-student-info p {
+  margin: 0 0 10px 0;
+}
+
+.report-card-footer {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.report-card-result {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.report-card-result .success {
+  color: #2e7d32;
+}
+
+.report-card-result .fail {
+  color: #c62828;
+}
+
+.report-card-signatures {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 80px;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: var(--primary-hover-color);
+}
+
+button.secondary {
+    background-color: #ccc;
+    color: #333;
+}
+
+button.secondary:hover {
+    background-color: #bbb;
+}
+
+button.danger {
+  background-color: var(--danger-color);
+}
+
+button.danger:hover {
+  background-color: var(--danger-hover-color);
+}
+
+/* Input and select styles */
+input[type="text"],
+input[type="date"],
+input[type="search"],
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-sizing: border-box; /* Important for width: 100% */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  text-align: right; /* RTL support */
+}
+
+thead tr {
+  background-color: #f2f7ff;
+}
+
+th {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+tbody tr:nth-of-type(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f1f5f8;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--white-color);
+  padding: 24px;
+  border-radius: var(--border-radius);
+  width: 500px;
+  max-width: 90%;
+  box-shadow: var(--box-shadow);
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px; /* RTL support */
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: var(--text-light-color);
+}
+
+.modal-close-btn:hover {
+    color: var(--text-color);
+    background: none;
+}
+
+/* Form styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.photo-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+  margin-top: 10px;
+  align-self: center;
+}
+
+/* Page Header for consistent layout */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header .actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Navbar / Sidebar styles */
+.navbar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  background-color: #2c3e50; /* A dark, modern sidebar color */
+  padding: 20px;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.navbar-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.navbar-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    background-color: #fff; /* Placeholder background */
+    object-fit: cover;
+}
+
+.navbar-school-name {
+    color: var(--white-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.navbar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.navbar-link {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 12px 15px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navbar-link:hover {
+  background-color: #34495e;
+  color: var(--white-color);
+}
+
+.navbar-link.active {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}

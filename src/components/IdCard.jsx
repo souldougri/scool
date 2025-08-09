@@ -39,9 +39,6 @@ function IdCard() {
   const handlePrint = () => window.print();
 
   const handleExportPdf = async () => {
-    // Standard ID card size is approx 85.6mm x 53.98mm
-    // In pixels at 96 DPI, this is roughly 323px x 204px.
-    // Let's use a slightly larger size for better quality.
     const result = await window.db.exportToPdf({
         printBackground: true,
         pageSize: { width: 85600, height: 53980 } // in microns
@@ -54,75 +51,49 @@ function IdCard() {
   };
 
   if (loading) {
-    return <div>جاري تحميل البيانات...</div>;
+    return <div className="container">جاري تحميل البيانات...</div>;
   }
 
   if (!student) {
-    return <div>لم يتم العثور على الطالب.</div>;
+    return <div className="container">لم يتم العثور على الطالب.</div>;
   }
 
-  const cardStyle = {
-    direction: 'rtl',
-    fontFamily: 'Tajawal, sans-serif',
-    width: '323px', // approx 85.6mm at 96 DPI
-    height: '204px', // approx 53.98mm at 96 DPI
-    border: '1px solid #aaa',
-    borderRadius: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    backgroundColor: 'white',
-  };
-
   return (
-    <>
-      <style>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          #print-area, #print-area * {
-            visibility: visible;
-          }
-          #print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-          }
-          .no-print {
-            display: none;
-          }
-        }
-      `}</style>
-      <div className="no-print" style={{ padding: '20px', textAlign: 'center' }}>
-          <button onClick={() => navigate('/students')}>&larr; العودة إلى قائمة الطلاب</button>
-          <button onClick={handlePrint} style={{ margin: '0 10px' }}>طباعة</button>
-          <button onClick={handleExportPdf}>حفظ كـ PDF</button>
+    <div className="container">
+      <div className="page-header no-print">
+        <h2>بطاقة الطالب: {student.name}</h2>
+        <div className="actions">
+            <button onClick={() => navigate('/students')} className="secondary">&larr; العودة إلى الطلاب</button>
+            <button onClick={handlePrint}>طباعة</button>
+            <button onClick={handleExportPdf} className="secondary">حفظ كـ PDF</button>
+        </div>
       </div>
-      <div id="print-area" style={{ padding: '20px', display: 'flex', justifyContent: 'center' }}>
-        <div style={cardStyle}>
-            <header style={{ background: '#007bff', color: 'white', padding: '5px', textAlign: 'center', fontSize: '12px' }}>
-                <strong>{schoolInfo.name}</strong>
+
+      <div id="print-area" className="id-card-container">
+        <div className="id-card">
+            <header className="id-card-header">
+                {schoolInfo.logo && <img src={schoolInfo.logo} alt="School Logo"/>}
+                <span>{schoolInfo.name}</span>
             </header>
-            <div style={{ display: 'flex', flexGrow: 1, padding: '10px', gap: '10px' }}>
-                <div style={{ width: '80px', height: '80px' }}>
+            <div className="id-card-body">
+                <div className="id-card-photo">
                     {studentPhoto ?
-                        <img src={studentPhoto} alt="Student" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> :
-                        <div style={{ width: '100%', height: '100%', background: '#ccc', textAlign: 'center', lineHeight: '80px' }}>صورة</div>
+                        <img src={studentPhoto} alt="Student" /> :
+                        <div style={{ background: '#ccc', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#777' }}>صورة</div>
                     }
                 </div>
-                <div style={{ fontSize: '14px' }}>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>الاسم:</strong> {student.name}</p>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>الفصل:</strong> {student.class_name}</p>
-                    <p style={{ margin: '0' }}><strong>بطاقة طالب</strong></p>
+                <div className="id-card-details">
+                    <p><strong>الاسم:</strong> {student.name}</p>
+                    <p><strong>الفصل:</strong> {student.class_name}</p>
+                    <p><strong>تاريخ الميلاد:</strong> {student.dob}</p>
                 </div>
             </div>
-            <footer style={{ background: '#f2f2f2', padding: '5px', textAlign: 'center' }}>
-                {schoolInfo.logo && <img src={schoolInfo.logo} alt="School Logo" style={{ height: '20px', opacity: 0.7 }} />}
+            <footer className="id-card-footer">
+                بطاقة تعريفية
             </footer>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

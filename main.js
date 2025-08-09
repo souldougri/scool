@@ -161,21 +161,29 @@ app.whenReady().then(async () => {
   });
 
   ipcMain.handle('update-student', async (event, { id, student }) => {
-    let photo_path = student.photo_path;
-    if (student.photo_data) {
-      // If there's a new photo, save it and update the path
-      photo_path = path.join(studentPhotosPath, `${Date.now()}.png`);
-      const data = Buffer.from(student.photo_data.split(',')[1], 'base64');
-      fs.writeFileSync(photo_path, data);
+    const { photo_data, ...studentData } = student;
+    const updateData = { ...studentData };
+
+    if (photo_data) {
+      // If there's a new photo, save it and get the new path
+      const new_photo_path = path.join(studentPhotosPath, `${Date.now()}.png`);
+      const data = Buffer.from(photo_data.split(',')[1], 'base64');
+      fs.writeFileSync(new_photo_path, data);
+
+      // Add the new path to the data to be updated
+      updateData.photo_path = new_photo_path;
 
       // If there was an old photo, delete it
       const oldStudent = await db('students').where('id', id).first();
       if (oldStudent.photo_path && fs.existsSync(oldStudent.photo_path)) {
-        fs.unlinkSync(oldStudent.photo_path);
+        // Make sure not to delete the file if the path is the same (unlikely but possible)
+        if (oldStudent.photo_path !== new_photo_path) {
+          fs.unlinkSync(oldStudent.photo_path);
+        }
       }
     }
-    const { photo_data, ...studentData } = student;
-    return db('students').where('id', id).update({ ...studentData, photo_path });
+
+    return db('students').where('id', id).update(updateData);
   });
 
   ipcMain.handle('delete-student', async (event, id) => {

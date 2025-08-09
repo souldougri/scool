@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// A simple modal component
+// A simple modal component, now using CSS classes
 const Modal = ({ children, onClose }) => (
-  <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    <div style={{ background: 'white', padding: '20px', borderRadius: '5px', width: '500px', position: 'relative' }}>
-      <button onClick={onClose} style={{ position: 'absolute', top: '10px', right: '10px', background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+  <div className="modal-overlay">
+    <div className="modal-content">
+      <button onClick={onClose} className="modal-close-btn">&times;</button>
       {children}
     </div>
   </div>
 );
 
-// The form for adding/editing a student
+// The form for adding/editing a student, now using CSS classes
 const StudentForm = ({ student, onSave, onCancel, classes }) => {
   const [formData, setFormData] = useState({
     name: student ? student.name : '',
@@ -23,7 +23,6 @@ const StudentForm = ({ student, onSave, onCancel, classes }) => {
   const [photoPreview, setPhotoPreview] = useState(student ? student.photo_path : null);
 
   useEffect(() => {
-    // If we are editing a student, fetch their photo to display
     if (student && student.photo_path && !student.photo_path.startsWith('data:')) {
       window.db.getStudentPhoto(student.photo_path).then(dataUrl => {
         setPhotoPreview(dataUrl);
@@ -53,30 +52,27 @@ const StudentForm = ({ student, onSave, onCancel, classes }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="form">
       <h3>{student ? 'تعديل بيانات الطالب' : 'إضافة طالب جديد'}</h3>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input name="name" value={formData.name} onChange={handleChange} placeholder="الاسم الكامل" required />
-        <select name="gender" value={formData.gender} onChange={handleChange}>
-          <option value="ذكر">ذكر</option>
-          <option value="أنثى">أنثى</option>
-        </select>
-        <input name="dob" type="date" value={formData.dob} onChange={handleChange} required />
-        <select name="class_id" value={formData.class_id} onChange={handleChange} required>
-          <option value="">اختر الفصل</option>
-          {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>
-        <input type="file" accept="image/*" onChange={handlePhotoChange} />
-        {photoPreview && <img src={photoPreview} alt="Preview" style={{ width: '100px', height: '100px' }} />}
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-          <button type="button" onClick={onCancel}>إلغاء</button>
-          <button type="submit">{student ? 'تحديث' : 'إضافة'}</button>
-        </div>
+      {photoPreview && <img src={photoPreview} alt="Preview" className="photo-preview" />}
+      <input name="name" value={formData.name} onChange={handleChange} placeholder="الاسم الكامل" required />
+      <select name="gender" value={formData.gender} onChange={handleChange}>
+        <option value="ذكر">ذكر</option>
+        <option value="أنثى">أنثى</option>
+      </select>
+      <input name="dob" type="date" value={formData.dob} onChange={handleChange} required />
+      <select name="class_id" value={formData.class_id} onChange={handleChange} required>
+        <option value="">اختر الفصل</option>
+        {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+      </select>
+      <input type="file" accept="image/*" onChange={handlePhotoChange} />
+      <div className="form-actions">
+        <button type="button" className="secondary" onClick={onCancel}>إلغاء</button>
+        <button type="submit">{student ? 'تحديث' : 'إضافة'}</button>
       </div>
     </form>
   );
 };
-
 
 function StudentManagement() {
   const navigate = useNavigate();
@@ -134,11 +130,13 @@ function StudentManagement() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>إدارة الطلاب</h2>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <input type="text" placeholder="بحث بالاسم..." value={search} onChange={e => setSearch(e.target.value)} style={{ padding: '8px' }} />
-        <button onClick={handleAdd}>إضافة طالب جديد</button>
+    <div className="container">
+      <div className="page-header">
+        <h2>إدارة الطلاب</h2>
+        <div className="actions">
+            <input type="search" placeholder="بحث بالاسم..." value={search} onChange={e => setSearch(e.target.value)} />
+            <button onClick={handleAdd}>إضافة طالب جديد</button>
+        </div>
       </div>
 
       {isModalOpen && (
@@ -152,28 +150,28 @@ function StudentManagement() {
         </Modal>
       )}
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table>
         <thead>
-          <tr style={{ background: '#f2f2f2' }}>
-            <th style={{ padding: '8px', border: '1px solid #ddd' }}>الاسم</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd' }}>الجنس</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd' }}>تاريخ الميلاد</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd' }}>الفصل</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd' }}>إجراءات</th>
+          <tr>
+            <th>الاسم</th>
+            <th>الجنس</th>
+            <th>تاريخ الميلاد</th>
+            <th>الفصل</th>
+            <th>إجراءات</th>
           </tr>
         </thead>
         <tbody>
           {filteredStudents.map(student => (
             <tr key={student.id}>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{student.name}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{student.gender}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{student.dob}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{student.class_name || 'غير محدد'}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd', display: 'flex', gap: '5px' }}>
-                <button onClick={() => navigate(`/students/${student.id}/id-card`)}>بطاقة</button>
-                <button onClick={() => navigate(`/students/${student.id}/grades`)}>الدرجات</button>
+              <td>{student.name}</td>
+              <td>{student.gender}</td>
+              <td>{student.dob}</td>
+              <td>{student.class_name || 'غير محدد'}</td>
+              <td className="actions-cell">
+                <button className="secondary" onClick={() => navigate(`/students/${student.id}/id-card`)}>بطاقة</button>
+                <button className="secondary" onClick={() => navigate(`/students/${student.id}/grades`)}>الدرجات</button>
                 <button onClick={() => handleEdit(student)}>تعديل</button>
-                <button onClick={() => handleDelete(student.id)}>حذف</button>
+                <button className="danger" onClick={() => handleDelete(student.id)}>حذف</button>
               </td>
             </tr>
           ))}

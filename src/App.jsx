@@ -9,21 +9,26 @@ import Grades from './components/Grades';
 import ReportCard from './components/ReportCard';
 import IdCard from './components/IdCard';
 import Schedule from './components/Schedule';
+import './App.css'; // Import the new stylesheet
 
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Settings />} />
-        <Route path="/classes" element={<Classes />} />
-        <Route path="/subjects" element={<Subjects />} />
-        <Route path="/students" element={<StudentManagement />} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/students/:studentId/grades" element={<Grades />} />
-        <Route path="/students/:studentId/report-card" element={<ReportCard />} />
-        <Route path="/students/:studentId/id-card" element={<IdCard />} />
-      </Routes>
+      <div className="app-container">
+        <Navbar />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Settings />} />
+            <Route path="/classes" element={<Classes />} />
+            <Route path="/subjects" element={<Subjects />} />
+            <Route path="/students" element={<StudentManagement />} />
+            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/students/:studentId/grades" element={<Grades />} />
+            <Route path="/students/:studentId/report-card" element={<ReportCard />} />
+            <Route path="/students/:studentId/id-card" element={<IdCard />} />
+          </Routes>
+        </main>
+      </div>
     </Router>
   );
 }

@@ -4,7 +4,7 @@ function Subjects() {
   const [subjects, setSubjects] = useState([]);
   const [subjectName, setSubjectName] = useState('');
   const [editingSubject, setEditingSubject] = useState(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState({ text: '', type: 'success' });
 
   const fetchSubjects = async () => {
     const fetchedSubjects = await window.db.getSubjects();
@@ -15,9 +15,9 @@ function Subjects() {
     fetchSubjects();
   }, []);
 
-  const showMessage = (msg) => {
-    setMessage(msg);
-    setTimeout(() => setMessage(''), 3000);
+  const showMessage = (text, type = 'success') => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: '', type: 'success' }), 3000);
   };
 
   const handleSubmit = async (e) => {
@@ -37,7 +37,7 @@ function Subjects() {
       fetchSubjects();
     } catch (error) {
       console.error('Failed to save subject:', error);
-      showMessage('حدث خطأ. قد يكون اسم المادة موجودًا بالفعل.');
+      showMessage('حدث خطأ. قد يكون اسم المادة موجودًا بالفعل.', 'error');
     }
   };
 
@@ -54,7 +54,7 @@ function Subjects() {
         fetchSubjects();
       } catch (error) {
         console.error('Failed to delete subject:', error);
-        showMessage('حدث خطأ أثناء حذف المادة.');
+        showMessage('حدث خطأ أثناء حذف المادة.', 'error');
       }
     }
   };
@@ -64,48 +64,46 @@ function Subjects() {
     setSubjectName('');
   };
 
-  const styles = {
-    container: { padding: '20px', maxWidth: '600px', margin: '0 auto' },
-    form: { display: 'flex', gap: '10px', marginBottom: '20px' },
-    input: { flexGrow: 1, padding: '8px' },
-    button: { padding: '8px 15px', cursor: 'pointer' },
-    list: { listStyle: 'none', padding: 0 },
-    listItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', border: '1px solid #ddd', marginBottom: '5px', borderRadius: '4px' },
-    message: { marginTop: '10px', color: 'green', textAlign: 'center' },
-  };
-
   return (
-    <div style={styles.container}>
-      <h2>إدارة المواد الدراسية</h2>
+    <div className="container">
+      <div className="page-header">
+        <h2>إدارة المواد الدراسية</h2>
+        <form onSubmit={handleSubmit} className="actions">
+          <input
+            type="text"
+            placeholder={editingSubject ? 'تعديل اسم المادة' : 'إضافة مادة جديدة'}
+            value={subjectName}
+            onChange={(e) => setSubjectName(e.target.value)}
+            required
+          />
+          <button type="submit">{editingSubject ? 'تحديث' : 'إضافة'}</button>
+          {editingSubject && (
+            <button type="button" onClick={handleCancelEdit} className="secondary">إلغاء</button>
+          )}
+        </form>
+      </div>
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="text"
-          placeholder={editingSubject ? 'تعديل اسم المادة' : 'إضافة مادة جديدة'}
-          value={subjectName}
-          onChange={(e) => setSubjectName(e.target.value)}
-          style={styles.input}
-          required
-        />
-        <button type="submit" style={styles.button}>{editingSubject ? 'تحديث' : 'إضافة'}</button>
-        {editingSubject && (
-          <button type="button" onClick={handleCancelEdit} style={{...styles.button, backgroundColor: '#ccc'}}>إلغاء</button>
-        )}
-      </form>
+      {message.text && <div className={`message ${message.type}`}>{message.text}</div>}
 
-      {message && <p style={styles.message}>{message}</p>}
-
-      <ul style={styles.list}>
-        {subjects.map((sub) => (
-          <li key={sub.id} style={styles.listItem}>
-            <span>{sub.name}</span>
-            <div>
-              <button onClick={() => handleEdit(sub)} style={{...styles.button, marginLeft: '10px'}}>تعديل</button>
-              <button onClick={() => handleDelete(sub.id)} style={{...styles.button, backgroundColor: '#f44336', color: 'white'}}>حذف</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>اسم المادة</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          {subjects.map((sub) => (
+            <tr key={sub.id}>
+              <td>{sub.name}</td>
+              <td className="actions-cell">
+                <button onClick={() => handleEdit(sub)}>تعديل</button>
+                <button onClick={() => handleDelete(sub.id)} className="danger">حذف</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

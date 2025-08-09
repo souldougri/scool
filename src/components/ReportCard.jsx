@@ -49,7 +49,7 @@ function ReportCard() {
       return { subjectName: subject.name, grade };
     });
 
-    const average = totalMarks / subjects.length;
+    const average = subjects.length > 0 ? totalMarks / subjects.length : 0;
     const result = average >= 50 ? 'ناجح' : 'راسب';
 
     return { details, totalMarks, average, result };
@@ -58,7 +58,7 @@ function ReportCard() {
   const handlePrint = () => window.print();
 
   const handleExportPdf = async () => {
-    const result = await window.db.exportToPdf({ pageSize: 'A4' });
+    const result = await window.db.exportToPdf({ pageSize: 'A4', printBackground: true });
     if (result.success) {
       alert(`تم حفظ الشهادة بنجاح في: ${result.path}`);
     } else {
@@ -67,92 +67,79 @@ function ReportCard() {
   };
 
   if (loading) {
-    return <div>جاري تحميل البيانات...</div>;
+    return <div className="container">جاري تحميل البيانات...</div>;
   }
 
   if (!student) {
-    return <div>لم يتم العثور على الطالب.</div>;
+    return <div className="container">لم يتم العثور على الطالب.</div>;
   }
 
   if (!reportData) {
-      return <div>لا توجد مواد أو درجات لعرضها.</div>
+    return <div className="container">لا توجد مواد أو درجات لعرضها.</div>;
   }
 
   return (
-    <>
-      <style>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          #print-area, #print-area * {
-            visibility: visible;
-          }
-          #print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-          }
-          .no-print {
-            display: none;
-          }
-        }
-      `}</style>
-      <div className="no-print" style={{ padding: '20px', textAlign: 'center' }}>
-          <button onClick={() => navigate(`/students/${studentId}/grades`)}>&larr; العودة إلى صفحة الدرجات</button>
-          <button onClick={handlePrint} style={{ margin: '0 10px' }}>طباعة</button>
-          <button onClick={handleExportPdf}>حفظ كـ PDF</button>
-      </div>
-      <div id="print-area" style={{ direction: 'rtl', fontFamily: 'Tajawal, sans-serif', padding: '20px', margin: '20px auto', width: '210mm', minHeight: '297mm', border: '2px solid black' }}>
-        <header style={{ textAlign: 'center', marginBottom: '40px', borderBottom: '1px solid #ccc', paddingBottom: '20px' }}>
-          {schoolInfo.logo && <img src={schoolInfo.logo} alt="School Logo" style={{ width: '100px', height: '100px' }} />}
+    <div className="container">
+        <div className="page-header no-print">
+            <h2>شهادة الطالب: {student.name}</h2>
+            <div className="actions">
+                <button onClick={() => navigate(`/students/${studentId}/grades`)} className="secondary">&larr; العودة إلى الدرجات</button>
+                <button onClick={handlePrint}>طباعة</button>
+                <button onClick={handleExportPdf} className="secondary">حفظ كـ PDF</button>
+            </div>
+        </div>
+
+      <div id="print-area" className="report-card">
+        <header className="report-card-header">
+          {schoolInfo.logo && <img src={schoolInfo.logo} alt="School Logo" />}
           <h1>{schoolInfo.name}</h1>
           <h2>شهادة نتائج نهاية العام الدراسي</h2>
         </header>
 
-        <section style={{ marginBottom: '30px' }}>
+        <section className="report-card-student-info">
           <p><strong>اسم الطالب:</strong> {student.name}</p>
           <p><strong>الفصل الدراسي:</strong> {student.class_name}</p>
           <p><strong>تاريخ الميلاد:</strong> {student.dob}</p>
         </section>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
+        <table>
           <thead>
-            <tr style={{ background: '#f2f2f2' }}>
-              <th style={{ padding: '12px', border: '1px solid #ddd' }}>المادة الدراسية</th>
-              <th style={{ padding: '12px', border: '1px solid #ddd' }}>الدرجة (من 100)</th>
+            <tr>
+              <th>المادة الدراسية</th>
+              <th>الدرجة (من 100)</th>
             </tr>
           </thead>
           <tbody>
             {reportData.details.map((item, index) => (
               <tr key={index}>
-                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{item.subjectName}</td>
-                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{item.grade}</td>
+                <td>{item.subjectName}</td>
+                <td>{item.grade}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
-            <tr style={{ fontWeight: 'bold', background: '#f2f2f2' }}>
-                <td style={{ padding: '12px', border: '1px solid #ddd' }}>المجموع</td>
-                <td style={{ padding: '12px', border: '1px solid #ddd' }}>{reportData.totalMarks}</td>
+            <tr>
+                <td><strong>المجموع</strong></td>
+                <td><strong>{reportData.totalMarks}</strong></td>
             </tr>
-            <tr style={{ fontWeight: 'bold' }}>
-                <td style={{ padding: '12px', border: '1px solid #ddd' }}>المعدل</td>
-                <td style={{ padding: '12px', border: '1px solid #ddd' }}>{reportData.average.toFixed(2)}%</td>
+            <tr>
+                <td><strong>المعدل</strong></td>
+                <td><strong>{reportData.average.toFixed(2)}%</strong></td>
             </tr>
           </tfoot>
         </table>
 
-        <footer style={{ textAlign: 'center', marginTop: '50px' }}>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>النتيجة النهائية: <span style={{ color: reportData.result === 'ناجح' ? 'green' : 'red' }}>{reportData.result}</span></p>
-          <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '80px' }}>
-            <p><strong>توقيع مدير المدرسة</strong></p>
-            <p><strong>الختم الرسمي</strong></p>
+        <footer className="report-card-footer">
+          <p className="report-card-result">
+            النتيجة النهائية: <span className={reportData.result === 'ناجح' ? 'success' : 'fail'}>{reportData.result}</span>
+          </p>
+          <div className="report-card-signatures">
+            <p>توقيع مدير المدرسة</p>
+            <p>الختم الرسمي</p>
           </div>
         </footer>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -3,11 +3,15 @@ import React, { useState, useEffect } from 'react';
 function Settings() {
   const [schoolName, setSchoolName] = useState('');
   const [logo, setLogo] = useState(null);
-  const [message, setMessage] = useState(null); // { text: '', isError: false }
+  const [message, setMessage] = useState(null); // { text: '', type: 'success' | 'error' }
 
-  const showMessage = (text, isError = false) => {
-    setMessage({ text, isError });
+  const showMessage = (text, type = 'success') => {
+    setMessage({ text, type });
     setTimeout(() => setMessage(null), 5000);
+  };
+
+  const dispatchSettingsUpdate = () => {
+    window.dispatchEvent(new Event('settings-updated'));
   };
 
   const handleBackup = async () => {
@@ -15,7 +19,7 @@ function Settings() {
     if (result.success) {
       showMessage(`تم إنشاء النسخة الاحتياطية بنجاح في: ${result.path}`);
     } else {
-      showMessage(result.error || result.message || 'فشل إنشاء النسخة الاحتياطية.', true);
+      showMessage(result.error || result.message || 'فشل إنشاء النسخة الاحتياطية.', 'error');
     }
   };
 
@@ -26,7 +30,7 @@ function Settings() {
         alert('تمت الاستعادة بنجاح! سيتم الآن إعادة تشغيل التطبيق لتطبيق التغييرات.');
         await window.app.relaunch();
       } else {
-        showMessage(result.error || result.message || 'فشلت عملية الاستعادة.', true);
+        showMessage(result.error || result.message || 'فشلت عملية الاستعادة.', 'error');
       }
     }
   };
@@ -34,13 +38,9 @@ function Settings() {
   useEffect(() => {
     async function fetchSettings() {
       const name = await window.db.getSetting('schoolName');
-      if (name) {
-        setSchoolName(name);
-      }
+      if (name) setSchoolName(name);
       const currentLogo = await window.db.getLogo();
-      if (currentLogo) {
-        setLogo(currentLogo);
-      }
+      if (currentLogo) setLogo(currentLogo);
     }
     fetchSettings();
   }, []);
@@ -56,8 +56,9 @@ function Settings() {
       if (result.success) {
         setLogo(fileData); // Update preview immediately
         showMessage('تم تحديث الشعار بنجاح!');
+        dispatchSettingsUpdate();
       } else {
-        showMessage(`خطأ في تحديث الشعار: ${result.error}`, true);
+        showMessage(`خطأ في تحديث الشعار: ${result.error}`, 'error');
       }
     };
     reader.readAsDataURL(file);
@@ -68,50 +69,52 @@ function Settings() {
     try {
       await window.db.updateSetting({ key: 'schoolName', value: schoolName });
       showMessage('تم حفظ الإعدادات بنجاح!');
+      dispatchSettingsUpdate();
     } catch (error) {
       console.error('Failed to save settings:', error);
-      showMessage('حدث خطأ أثناء حفظ الإعدادات.', true);
+      showMessage('حدث خطأ أثناء حفظ الإعدادات.', 'error');
     }
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '700px', margin: '0 auto' }}>
+    <div className="container">
       <h2>إعدادات المدرسة</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <label htmlFor="schoolName" style={{ display: 'block', marginBottom: '5px' }}>اسم المدرسة:</label>
+      <form onSubmit={handleSubmit} className="form" style={{ maxWidth: '600px' }}>
+        <div className="form-group">
+          <label htmlFor="schoolName">اسم المدرسة:</label>
           <input
             type="text"
             id="schoolName"
             value={schoolName}
             onChange={(e) => setSchoolName(e.target.value)}
-            style={{ width: '300px', padding: '8px' }}
           />
         </div>
 
-        <div>
-          <label htmlFor="schoolLogo" style={{ display: 'block', marginBottom: '5px' }}>شعار المدرسة:</label>
+        <div className="form-group">
+          <label htmlFor="schoolLogo">شعار المدرسة:</label>
           <input
             type="file"
             id="schoolLogo"
             accept="image/png, image/jpeg"
             onChange={handleLogoChange}
           />
-          {logo && <img src={logo} alt="School Logo" style={{ width: '100px', height: '100px', marginTop: '10px', border: '1px solid #ddd' }} />}
+          {logo && <img src={logo} alt="School Logo" className="photo-preview" />}
         </div>
 
-        <button type="submit" style={{ width: '150px', padding: '10px' }}>حفظ الإعدادات</button>
+        <div className="form-actions">
+            <button type="submit">حفظ الإعدادات</button>
+        </div>
       </form>
-      {message && <p style={{ color: message.isError ? 'red' : 'green', marginTop: '20px' }}>{message.text}</p>}
+      {message && <div className={`message ${message.type}`}>{message.text}</div>}
 
       <hr style={{ margin: '40px 0' }} />
 
-      <div>
+      <div className="backup-restore-section">
         <h2>النسخ الاحتياطي والاستعادة</h2>
-        <p>يمكنك إنشاء نسخة احتياطية من جميع بيانات التطبيق (الطلاب، الدرجات، الإعدادات، إلخ) أو استعادة البيانات من نسخة سابقة.</p>
-        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-          <button onClick={handleBackup} style={{ padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>إنشاء نسخة احتياطية</button>
-          <button onClick={handleRestore} style={{ padding: '10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>استعادة نسخة احتياطية</button>
+        <p>يمكنك إنشاء نسخة احتياطية من جميع بيانات التطبيق أو استعادة البيانات من نسخة سابقة.</p>
+        <div className="form-actions">
+          <button onClick={handleBackup} className="success">إنشاء نسخة احتياطية</button>
+          <button onClick={handleRestore} className="danger">استعادة نسخة احتياطية</button>
         </div>
       </div>
     </div>
