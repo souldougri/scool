@@ -81,7 +81,7 @@ function Grades() {
                   id={`grade-${subject.id}`}
                   type="number"
                   min="0"
-                  max="100"
+                  max="20"
                   value={grades[subject.id] ?? ''}
                   onChange={(e) => handleGradeChange(subject.id, e.target.value)}
                 />

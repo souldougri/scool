@@ -111,7 +111,7 @@ function ReportCard() {
           <thead>
             <tr>
               <th>المادة الدراسية</th>
-              <th>الدرجة (من 100)</th>
+              <th>الدرجة (من 20)</th>
             </tr>
           </thead>
           <tbody>

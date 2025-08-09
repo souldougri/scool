@@ -39,6 +39,7 @@ contextBridge.exposeInMainWorld('db', {
 
   // Printing
   exportToPdf: (options) => ipcRenderer.invoke('export-to-pdf', options),
+  exportStudentListToPdf: (students) => ipcRenderer.invoke('export-student-list-pdf', students),
 });
 
 contextBridge.exposeInMainWorld('app', {

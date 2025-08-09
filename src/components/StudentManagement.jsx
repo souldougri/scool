@@ -140,6 +140,15 @@ function StudentManagement() {
     setEditingStudent(null);
   };
 
+  const handleExportPdf = async () => {
+    const result = await window.db.exportStudentListToPdf(filteredStudents);
+    if (result.success) {
+      alert(`تم حفظ الملف بنجاح في: ${result.path}`);
+    } else {
+      alert(`حدث خطأ أثناء تصدير الملف: ${result.error || result.message}`);
+    }
+  }
+
   return (
     <div className="container">
       <div className="page-header">
@@ -157,6 +166,7 @@ function StudentManagement() {
             </select>
             <button onClick={handleAdd}>إضافة طالب جديد</button>
             <button onClick={() => window.print()} className="secondary">طباعة القائمة</button>
+            <button onClick={handleExportPdf} className="secondary">تصدير PDF</button>
         </div>
       </div>
 

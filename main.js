@@ -229,6 +229,38 @@ app.whenReady().then(async () => {
     }
   });
 
+  ipcMain.handle('export-student-list-pdf', async (event, students) => {
+    try {
+        const templatePath = path.join(__dirname, '..', 'student-list-template.html');
+        const templateHtml = fs.readFileSync(templatePath, 'utf8');
+
+        const tableRows = students.map(s => `<tr><td>${s.name}</td><td></td></tr>`).join('');
+        const finalHtml = templateHtml.replace('<!-- ##TABLE_ROWS## -->', tableRows);
+
+        const tempWindow = new BrowserWindow({ show: false });
+        await tempWindow.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(finalHtml)}`);
+
+        const pdfData = await tempWindow.webContents.printToPDF({ pageSize: 'A4' });
+        tempWindow.close();
+
+        const { filePath } = await dialog.showSaveDialog({
+            title: 'حفظ قائمة الطلاب',
+            defaultPath: `student-list-${Date.now()}.pdf`,
+            filters: [{ name: 'Adobe PDF', extensions: ['pdf'] }]
+        });
+
+        if (filePath) {
+            fs.writeFileSync(filePath, pdfData);
+            return { success: true, path: filePath };
+        }
+        return { success: false, message: 'تم إلغاء العملية.' };
+
+    } catch (error) {
+        console.error('Failed to export student list PDF:', error);
+        return { success: false, error: error.message };
+    }
+  });
+
   // Backup and Restore IPC
   ipcMain.handle('backup-database', async () => {
     const { filePath } = await dialog.showSaveDialog({

@@ -7,7 +7,7 @@
     "start": "electron .",
     "dev": "cross-env NODE_ENV=development npm-run-all --parallel dev:vite dev:electron",
     "dev:vite": "vite",
-    "dev:electron": "electron .",
+    "dev:electron": "cross-env NODE_ENV=development electron .",
     "build": "npx vite build",
     "postinstall": "electron-builder install-app-deps",
     "dist": "npm run build && electron-builder"

@@ -108,14 +108,14 @@ function Settings() {
         </div>
 
         <div className="form-group">
-            <label htmlFor="passThreshold">درجة النجاح (من 100):</label>
+            <label htmlFor="passThreshold">درجة النجاح (من 20):</label>
             <input
                 type="number"
                 id="passThreshold"
                 value={passThreshold}
                 onChange={(e) => setPassThreshold(e.target.value)}
                 min="0"
-                max="100"
+                max="20"
             />
         </div>
 
