@@ -19,6 +19,8 @@ const StudentForm = ({ student, onSave, onCancel, classes }) => {
     dob: student ? student.dob : '',
     class_id: student ? student.class_id : '',
     photo_data: null,
+    phone_number: student ? student.phone_number : '',
+    place_of_birth: student ? student.place_of_birth : '',
   });
   const [photoPreview, setPhotoPreview] = useState(student ? student.photo_path : null);
 
@@ -56,6 +58,8 @@ const StudentForm = ({ student, onSave, onCancel, classes }) => {
       <h3>{student ? 'تعديل بيانات الطالب' : 'إضافة طالب جديد'}</h3>
       {photoPreview && <img src={photoPreview} alt="Preview" className="photo-preview" />}
       <input name="name" value={formData.name} onChange={handleChange} placeholder="الاسم الكامل" required />
+      <input name="place_of_birth" value={formData.place_of_birth} onChange={handleChange} placeholder="مكان الميلاد" />
+      <input name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="رقم الهاتف" />
       <select name="gender" value={formData.gender} onChange={handleChange}>
         <option value="ذكر">ذكر</option>
         <option value="أنثى">أنثى</option>
@@ -79,6 +83,8 @@ function StudentManagement() {
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   const [search, setSearch] = useState('');
+  const [classFilter, setClassFilter] = useState('');
+  const [genderFilter, setGenderFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
 
@@ -98,8 +104,13 @@ function StudentManagement() {
   }, []);
 
   const filteredStudents = useMemo(() => {
-    return students.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
-  }, [students, search]);
+    return students.filter(s => {
+        const nameMatch = s.name.toLowerCase().includes(search.toLowerCase());
+        const classMatch = classFilter ? s.class_id == classFilter : true;
+        const genderMatch = genderFilter ? s.gender === genderFilter : true;
+        return nameMatch && classMatch && genderMatch;
+    });
+  }, [students, search, classFilter, genderFilter]);
 
   const handleAdd = () => {
     setEditingStudent(null);
@@ -134,8 +145,18 @@ function StudentManagement() {
       <div className="page-header">
         <h2>إدارة الطلاب</h2>
         <div className="actions">
-            <input type="search" placeholder="بحث بالاسم..." value={search} onChange={e => setSearch(e.target.value)} />
+            <input type="search" placeholder="بحث بالاسم..." value={search} onChange={e => setSearch(e.target.value)} style={{width: '200px'}}/>
+            <select value={classFilter} onChange={e => setClassFilter(e.target.value)}>
+                <option value="">كل الفصول</option>
+                {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+            <select value={genderFilter} onChange={e => setGenderFilter(e.target.value)}>
+                <option value="">الكل</option>
+                <option value="ذكر">ذكر</option>
+                <option value="أنثى">أنثى</option>
+            </select>
             <button onClick={handleAdd}>إضافة طالب جديد</button>
+            <button onClick={() => window.print()} className="secondary">طباعة القائمة</button>
         </div>
       </div>
 
@@ -150,12 +171,14 @@ function StudentManagement() {
         </Modal>
       )}
 
+      <div id="print-area">
       <table>
         <thead>
           <tr>
             <th>الاسم</th>
             <th>الجنس</th>
             <th>تاريخ الميلاد</th>
+            <th>رقم الهاتف</th>
             <th>الفصل</th>
             <th>إجراءات</th>
           </tr>
@@ -166,6 +189,7 @@ function StudentManagement() {
               <td>{student.name}</td>
               <td>{student.gender}</td>
               <td>{student.dob}</td>
+              <td>{student.phone_number || '-'}</td>
               <td>{student.class_name || 'غير محدد'}</td>
               <td className="actions-cell">
                 <button className="secondary" onClick={() => navigate(`/students/${student.id}/id-card`)}>بطاقة</button>
@@ -177,6 +201,7 @@ function StudentManagement() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

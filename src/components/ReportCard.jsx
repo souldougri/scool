@@ -7,7 +7,7 @@ function ReportCard() {
   const [student, setStudent] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [grades, setGrades] = useState([]);
-  const [schoolInfo, setSchoolInfo] = useState({ name: '', logo: null });
+  const [schoolInfo, setSchoolInfo] = useState({ name: '', logo: null, passThreshold: 50 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +28,12 @@ function ReportCard() {
 
         const schoolName = await window.db.getSetting('schoolName');
         const schoolLogo = await window.db.getLogo();
-        setSchoolInfo({ name: schoolName, logo: schoolLogo });
+        const passThreshold = await window.db.getSetting('pass_threshold');
+        setSchoolInfo({
+            name: schoolName,
+            logo: schoolLogo,
+            passThreshold: parseInt(passThreshold, 10) || 50
+        });
       } catch (error) {
         console.error("Failed to fetch report card data:", error);
       } finally {
@@ -50,10 +55,10 @@ function ReportCard() {
     });
 
     const average = subjects.length > 0 ? totalMarks / subjects.length : 0;
-    const result = average >= 50 ? 'ناجح' : 'راسب';
+    const result = average >= schoolInfo.passThreshold ? 'ناجح' : 'راسب';
 
     return { details, totalMarks, average, result };
-  }, [student, subjects, grades]);
+  }, [student, subjects, grades, schoolInfo.passThreshold]);
 
   const handlePrint = () => window.print();
 

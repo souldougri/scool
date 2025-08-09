@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 function Settings() {
   const [schoolName, setSchoolName] = useState('');
   const [logo, setLogo] = useState(null);
+  const [passThreshold, setPassThreshold] = useState(50);
   const [message, setMessage] = useState(null); // { text: '', type: 'success' | 'error' }
 
   const showMessage = (text, type = 'success') => {
@@ -39,6 +40,10 @@ function Settings() {
     async function fetchSettings() {
       const name = await window.db.getSetting('schoolName');
       if (name) setSchoolName(name);
+
+      const threshold = await window.db.getSetting('pass_threshold');
+      if (threshold) setPassThreshold(parseInt(threshold, 10));
+
       const currentLogo = await window.db.getLogo();
       if (currentLogo) setLogo(currentLogo);
     }
@@ -68,6 +73,7 @@ function Settings() {
     e.preventDefault();
     try {
       await window.db.updateSetting({ key: 'schoolName', value: schoolName });
+      await window.db.updateSetting({ key: 'pass_threshold', value: passThreshold.toString() });
       showMessage('تم حفظ الإعدادات بنجاح!');
       dispatchSettingsUpdate();
     } catch (error) {
@@ -99,6 +105,18 @@ function Settings() {
             onChange={handleLogoChange}
           />
           {logo && <img src={logo} alt="School Logo" className="photo-preview" />}
+        </div>
+
+        <div className="form-group">
+            <label htmlFor="passThreshold">درجة النجاح (من 100):</label>
+            <input
+                type="number"
+                id="passThreshold"
+                value={passThreshold}
+                onChange={(e) => setPassThreshold(e.target.value)}
+                min="0"
+                max="100"
+            />
         </div>
 
         <div className="form-actions">

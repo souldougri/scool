@@ -25,7 +25,14 @@ async function setupDatabase() {
       await db('settings').insert([
         { key: 'schoolName', value: 'اسم المدرسة الافتراضي' },
         { key: 'schoolLogo', value: null },
+        { key: 'pass_threshold', value: '50' },
       ]);
+    }
+
+    // Migration for pass_threshold setting for existing users
+    const hasPassThreshold = await db('settings').where('key', 'pass_threshold').first();
+    if (!hasPassThreshold) {
+      await db('settings').insert({ key: 'pass_threshold', value: '50' });
     }
 
     // Check for classes table
@@ -66,7 +73,24 @@ async function setupDatabase() {
         table.date('dob').notNullable();
         table.string('photo_path');
         table.integer('class_id').unsigned().references('id').inTable('classes').onDelete('SET NULL');
+        table.string('phone_number');
+        table.string('place_of_birth');
       });
+    } else {
+      // Migration for existing users
+      const hasPhoneNumber = await db.schema.hasColumn('students', 'phone_number');
+      if (!hasPhoneNumber) {
+        await db.schema.alterTable('students', (table) => {
+          table.string('phone_number');
+        });
+      }
+
+      const hasPlaceOfBirth = await db.schema.hasColumn('students', 'place_of_birth');
+      if (!hasPlaceOfBirth) {
+        await db.schema.alterTable('students', (table) => {
+          table.string('place_of_birth');
+        });
+      }
     }
 
     // Check for grades table

@@ -242,6 +242,10 @@ button.success:hover {
     padding: 8px;
     text-align: center;
   }
+
+  .actions-cell {
+    display: none !important;
+  }
 }
 
 /* ID Card Styles */
