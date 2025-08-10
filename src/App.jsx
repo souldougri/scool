@@ -1,6 +1,7 @@
 import React from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Home from './components/Home';
 import Settings from './components/Settings';
 import Classes from './components/Classes';
 import Subjects from './components/Subjects';
@@ -15,7 +16,8 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Settings />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/classes" element={<Classes />} />
         <Route path="/subjects" element={<Subjects />} />
         <Route path="/students" element={<StudentManagement />} />

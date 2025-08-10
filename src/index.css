@@ -12,3 +12,47 @@ body {
 h1 {
   color: #007bff;
 }
+
+.home-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.home-container header {
+  margin-bottom: 40px;
+}
+
+.home-container header img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.home-container .stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40px;
+}
+
+.home-container .shortcuts .shortcut-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.home-container .shortcuts .shortcut-button {
+  text-decoration: none;
+  color: inherit;
+}
+
+.home-container .shortcuts .shortcut-button div {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.home-container .shortcuts .shortcut-button i {
+  font-size: 24px;
+  margin-bottom: 10px;
+}

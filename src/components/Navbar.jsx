@@ -18,11 +18,12 @@ function Navbar() {
 
   return (
     <nav style={navStyle}>
-      <Link to="/" style={linkStyle}>الإعدادات</Link>
-      <Link to="/classes" style={linkStyle}>الفصول الدراسية</Link>
-      <Link to="/subjects" style={linkStyle}>المواد الدراسية</Link>
-      <Link to="/students" style={linkStyle}>الطلاب</Link>
-      <Link to="/schedule" style={linkStyle}>الجدول الأسبوعي</Link>
+      <Link to="/" style={linkStyle}><i className="fas fa-home"></i> الرئيسية</Link>
+      <Link to="/classes" style={linkStyle}><i className="fas fa-school"></i> الفصول الدراسية</Link>
+      <Link to="/subjects" style={linkStyle}><i className="fas fa-book"></i> المواد الدراسية</Link>
+      <Link to="/students" style={linkStyle}><i className="fas fa-users"></i> الطلاب</Link>
+      <Link to="/schedule" style={linkStyle}><i className="fas fa-calendar-alt"></i> الجدول الأسبوعي</Link>
+      <Link to="/settings" style={linkStyle}><i className="fas fa-cog"></i> الإعدادات</Link>
     </nav>
   );
 }
